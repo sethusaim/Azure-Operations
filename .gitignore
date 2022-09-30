@@ -7,6 +7,7 @@ __pycache__/
 *.so
 .terraform
 .terraform.lock.hcl
+demotest.py
 
 # Distribution / packaging
 .Python
