@@ -8,5 +8,6 @@ terraform {
 }
 
 module "io_files_container" {
-  source = "./io_files_container"
+  source = "./scania_io_files_container"
 }
+
