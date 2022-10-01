@@ -9,6 +9,8 @@ __pycache__/
 .terraform.lock.hcl
 demotest.py
 
+test
+
 # Distribution / packaging
 .Python
 build/

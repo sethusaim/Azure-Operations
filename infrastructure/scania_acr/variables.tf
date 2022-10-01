@@ -1,10 +1,19 @@
+variable "scania_acr_name" {
+  default = "scaniaecr"
+  type    = string
+}
+
 variable "scania_resource_group_name" {
+  default = "scaniarg"
   type    = string
-  default = "scania"
 }
 
-variable "scania_location" {
+variable "scania_resource_group_location" {
+  default = "eastus"
   type    = string
-  default = "westus"
 }
 
+variable "scania_acr_sku" {
+  default = "Standard"
+  type    = string
+}
