@@ -4,7 +4,7 @@ variable "scania_acr_name" {
 }
 
 variable "scania_resource_group_name" {
-  default = "scaniarg"
+  default = "ScaniaRG"
   type    = string
 }
 
