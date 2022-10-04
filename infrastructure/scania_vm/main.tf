@@ -23,20 +23,20 @@ resource "azurerm_linux_virtual_machine" "scania_vm" {
 
   admin_ssh_key {
     username   = var.scania_vm_ssh_username
-    public_key = tls_private_key.example_ssh.public_key_openssh
+    public_key = tls_private_key.scania_private_key.public_key_openssh
   }
 
   boot_diagnostics {
-    storage_account_uri = azurerm_storage_account.my_storage_account.primary_blob_endpoint
+    storage_account_uri = azurerm_storage_account.scania_storage_account.primary_blob_endpoint
   }
 
   depends_on = [
-    tls_private_key.example_ssh
+    tls_private_key.scania_private_key
   ]
 }
 
 
-resource "azurerm_storage_account" "my_storage_account" {
+resource "azurerm_storage_account" "scania_storage_account" {
   name                     = var.scania_boot_diag_sa_name
   location                 = var.scania_location
   resource_group_name      = var.scania_resouce_group_name

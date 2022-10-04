@@ -50,7 +50,7 @@ resource "azurerm_network_interface" "scania_nic" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "example" {
+resource "azurerm_network_interface_security_group_association" "scania_nic_sga" {
   network_interface_id      = azurerm_network_interface.scania_nic.id
   network_security_group_id = azurerm_network_security_group.scania_nsg.id
 }
