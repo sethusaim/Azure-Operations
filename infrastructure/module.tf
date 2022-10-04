@@ -12,7 +12,7 @@ provider "azurerm" {
 }
 
 module "resource_group" {
-  source = "./scania_resouce_group"
+  source = "./scania_resource_group"
 }
 
 module "virtual_machine" {
