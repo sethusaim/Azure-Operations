@@ -11,6 +11,8 @@ demotest.py
 
 test
 
+*.pem
+
 # Distribution / packaging
 .Python
 build/
