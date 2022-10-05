@@ -22,12 +22,12 @@ module "resource_group" {
 #   ]
 # }
 
-module "io_files_container" {
-  source = "./scania_io_files_container"
-  depends_on = [
-    module.resource_group
-  ]
-}
+# module "io_files_container" {
+#   source = "./scania_io_files_container"
+#   depends_on = [
+#     module.resource_group
+#   ]
+# }
 
 module "acr" {
   source = "./scania_acr"
