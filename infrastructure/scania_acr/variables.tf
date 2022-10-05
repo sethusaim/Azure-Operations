@@ -1,5 +1,5 @@
 variable "scania_acr_name" {
-  default = "scaniaecr"
+  default = "ScaniaACR"
   type    = string
 }
 

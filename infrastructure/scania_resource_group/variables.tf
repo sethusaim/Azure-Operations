@@ -1,6 +1,6 @@
 variable "scania_resoure_group_name" {
   type    = string
-  default = "scaniarg"
+  default = "ScaniaRG"
 }
 
 variable "scania_resoure_group_location" {
