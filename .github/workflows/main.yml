@@ -29,6 +29,12 @@ jobs:
 
           docker push ${{ secrets.AZURE_LOGIN_SERVER }}/${{ secrets.REPO_NAME }}:${{ github.sha }}
 
+      - name: Deploy to Azure Web App Service
+        uses: azure/webapps-container-deploy@v1
+        with: 
+          app-name: ${{ env.AZURE_WEBAPP_NAME }} 
+          images: '${{ env.CONTAINER_REGISTRY }}/app:latest'
+
   # Deploy:
   #   needs: build
   #   runs-on: ubuntu-latest
