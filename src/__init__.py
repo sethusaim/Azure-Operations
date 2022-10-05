@@ -3,9 +3,7 @@ import os
 
 from from_root import from_root
 
-logs_path = os.path.join("scania", "logs")
-
-# logs_path = os.path.join(from_root(), "scania","logs")
+logs_path = os.path.join(from_root(), "logs")
 
 os.makedirs(logs_path, exist_ok=True)
 

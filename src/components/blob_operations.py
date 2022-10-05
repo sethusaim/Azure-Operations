@@ -8,8 +8,8 @@ from shutil import rmtree
 
 from azure.storage.blob import BlobServiceClient, ContainerClient
 
-from scania.exception import ScaniaException
-from scania.utils.read_params import read_params
+from src.exception import CustomException
+from src.utils.read_params import read_params
 
 
 class BlobOperation:
@@ -21,7 +21,7 @@ class BlobOperation:
         self.save_format = self.config["save_format"]
 
         self.connection_string = environ["AZURE_CONN_STR"]
-        
+
     def get_blob_client(self, blob_fname, container):
         self.log_writer.info("Entered get_blob_client method of BlobOperation class")
 
@@ -41,7 +41,7 @@ class BlobOperation:
             return blob_client
 
         except Exception as e:
-            raise ScaniaException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def get_container_client(self, container):
         self.log_writer.info(
@@ -62,7 +62,7 @@ class BlobOperation:
             return container_client
 
         except Exception as e:
-            raise ScaniaException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def get_object(self, fname, container):
         self.log_writer.info("Entered get_object method of BlobOperation class")
@@ -79,7 +79,7 @@ class BlobOperation:
             return f
 
         except Exception as e:
-            raise ScaniaException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def read_object(self, object, decode=True, make_readable=False):
         self.log_writer.info("Entered read_object method of BlobOperation class")
@@ -102,7 +102,7 @@ class BlobOperation:
             return conv_func()
 
         except Exception as e:
-            raise ScaniaException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def load_model(self, model_name, container, model_dir=None):
         self.log_writer.info("Entered load_model method of BlobOperation class")
@@ -133,7 +133,7 @@ class BlobOperation:
             return model
 
         except Exception as e:
-            raise ScaniaException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def delete_file(self, fname, container):
         self.log_writer.info("Entered delete_file method of BlobOperation class")
@@ -148,7 +148,7 @@ class BlobOperation:
             self.log_writer.info("Exited delete_file method of BlobOperation class")
 
         except Exception as e:
-            raise ScaniaException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def load_file(self, fname, container):
         self.log_writer.info("Entered load_file method of BlobOperation class")
@@ -167,7 +167,7 @@ class BlobOperation:
             return f
 
         except Exception as e:
-            raise ScaniaException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def upload_file(
         self, local_fname, container_fname, container, delete=True, replace=True
@@ -217,8 +217,8 @@ class BlobOperation:
             self.log_writer.info("Exited upload_file method of BlobOperation class")
 
         except Exception as e:
-            raise ScaniaException(e, sys) from e
-        
+            raise CustomException(e, sys) from e
+
     def upload_folder(self, folder, container, delete=True):
         self.log_writer.info("Entered upload_folder method of BlobOperation class")
 
@@ -227,9 +227,7 @@ class BlobOperation:
 
             self.log_writer.info(f"Got list of files from the {folder} folder")
 
-            self.log_writer.info(
-                f"Uploading files from {folder} folder to container"
-            )
+            self.log_writer.info(f"Uploading files from {folder} folder to container")
 
             for f in lst:
                 local_f = join(folder, f)
@@ -249,4 +247,4 @@ class BlobOperation:
             self.log_writer.info("Exited upload_folder method of BlobOperation class")
 
         except Exception as e:
-            raise ScaniaException(e, sys) from e
+            raise CustomException(e, sys) from e
