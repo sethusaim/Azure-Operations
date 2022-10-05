@@ -1,7 +1,7 @@
 terraform {
   backend "azurerm" {
-    resource_group_name  = "scaniatfstate"
-    storage_account_name = "scaniatfstate"
+    resource_group_name  = "mytfstate"
+    storage_account_name = "mytfstate"
     container_name       = "tfstate" 
     key                  = "prod.terraform.tfstate"
   }
@@ -12,25 +12,25 @@ provider "azurerm" {
 }
 
 module "resource_group" {
-  source = "./scania_resource_group"
+  source = "./my_resource_group"
 }
 
 module "virtual_machine" {
-  source = "./scania_vm"
+  source = "./my_vm"
   depends_on = [
     module.resource_group
   ]
 }
 
 module "blob_container" {
-  source = "./scania_io_files_container"
+  source = "./my_io_files_container"
   depends_on = [
     module.resource_group
   ]
 }
 
 module "acr" {
-  source = "./scania_acr"
+  source = "./my_acr"
   depends_on = [
     module.resource_group
   ]

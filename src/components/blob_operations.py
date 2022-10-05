@@ -1,88 +1,129 @@
 import logging
+import pickle
 import sys
 from io import StringIO
-from os import environ, listdir, remove
+from os import listdir, remove
 from os.path import join
 from pickle import loads
 from shutil import rmtree
+from typing import Any
 
 from azure.storage.blob import BlobServiceClient, ContainerClient
 
+from src.constant import SAVE_FORMAT
+from src.entity.config_entity import BlobConfig
 from src.exception import CustomException
-from src.utils.read_params import read_params
+from src.logger import logging
 
 
 class BlobOperation:
     def __init__(self):
-        self.log_writer = logging.getLogger(__name__)
+        self.blob_config = BlobConfig()
 
-        self.config = read_params()
-
-        self.save_format = self.config["save_format"]
-
-        self.connection_string = environ["AZURE_CONN_STR"]
-
-    def get_blob_client(self, blob_fname, container):
-        self.log_writer.info("Entered get_blob_client method of BlobOperation class")
+    def get_blob_client(
+        self, blob_filename: str, container_name: str
+    ) -> BlobServiceClient:
+        """
+        Method Name :   get_blob_client
+        Description :   This method gets the blob client based on the blob_filename and container filename
+        
+        Output      :   BlobServiceClient object is returned 
+        On Failure  :   Raise a Custom Exception
+        
+        Version     :   1.2
+        Revisions   :   Moved to setup to cloud 
+        """
+        logging.info("Entered get_blob_client method of BlobOperation class")
 
         try:
-            client = BlobServiceClient.from_connection_string(self.connection_string)
-
-            self.log_writer.info("Got BlobServiceClient from connection string")
-
-            blob_client = client.get_blob_client(container=container, blob=blob_fname)
-
-            self.log_writer.info(
-                f"Got blob client for {blob_fname} blob from {container} container"
+            client = BlobServiceClient.from_connection_string(
+                self.blob_config.AZURE_CONN_STR
             )
 
-            self.log_writer.info("exit")
+            logging.info("Got BlobServiceClient from connection string")
+
+            blob_client = client.get_blob_client(container_name, blob_filename)
+
+            logging.info(
+                f"Got blob client for {blob_filename} blob from {container_name} container_name"
+            )
+
+            logging.info("Exited get_blob_client method of BlobOperation class ")
 
             return blob_client
 
         except Exception as e:
             raise CustomException(e, sys) from e
 
-    def get_container_client(self, container):
-        self.log_writer.info(
-            "Entered get_container_client method of BlobOperation class"
-        )
+    def get_container_client(self, container_name: str) -> ContainerClient:
+        """
+        Method Name :   get_container_client
+        Description :   This method gets the container client based on the container_name
+        
+        Output      :   ContainerClient object is returned 
+        On Failure  :   Raise a Custom Exception
+        
+        Version     :   1.2
+        Revisions   :   Moved to setup to cloud 
+        """
+        logging.info("Entered get_container_client method of BlobOperation class")
 
         try:
             container_client = ContainerClient.from_connection_string(
-                self.connection_string, container
+                self.blob_config.AZURE_CONN_STR, container_name
             )
 
-            self.log_writer.info("Got container client from connection string")
+            logging.info("Got container_name client from connection string")
 
-            self.log_writer.info(
-                "Exited get_container client method of BlobOperation class"
-            )
+            logging.info("Exited get_container client method of BlobOperation class")
 
             return container_client
 
         except Exception as e:
             raise CustomException(e, sys) from e
 
-    def get_object(self, fname, container):
-        self.log_writer.info("Entered get_object method of BlobOperation class")
+    def get_object(self, filename: str, container_name: str) -> object:
+        """
+        Method Name :   get_object
+        Description :   This method gets file object based on filename from container_name container
+        
+        Output      :   File object is returned based on filename from container_name container
+        On Failure  :   Raise a Custom Exception
+        
+        Version     :   1.2
+        Revisions   :   Moved to setup to cloud 
+        """
+        logging.info("Entered get_object method of BlobOperation class")
 
         try:
-            client = self.get_container_client(container)
+            client = self.get_container_client(container_name)
 
-            f = client.download_blob(blob=fname)
+            blob_object = client.download_blob(blob=filename)
 
-            self.log_writer.info(f"Got {fname} info from {container} container")
+            logging.info(f"Got {filename} info from {container_name} container_name")
 
-            self.log_writer.info("Exited get_object method of BlobOperation class")
+            logging.info("Exited get_object method of BlobOperation class")
 
-            return f
+            return blob_object
 
         except Exception as e:
             raise CustomException(e, sys) from e
 
-    def read_object(self, object, decode=True, make_readable=False):
-        self.log_writer.info("Entered read_object method of BlobOperation class")
+    @staticmethod
+    def read_object(
+        object: object, decode: bool = True, make_readable: bool = False
+    ) -> StringIO:
+        """
+        Method Name :   read_object
+        Description :   This method reads the blob object with kwargs
+        
+        Output      :   ContainerClient object is returned 
+        On Failure  :   Raise a Custom Exception
+        
+        Version     :   1.2
+        Revisions   :   Moved to setup to cloud 
+        """
+        logging.info("Entered read_object method of BlobOperation class")
 
         try:
             func = (
@@ -91,160 +132,221 @@ class BlobOperation:
                 else object.readall()
             )
 
-            self.log_writer.info(f"Read {object} object with decode as {decode}")
+            logging.info(f"Read {object} object with decode as {decode}")
 
             conv_func = lambda: StringIO(func()) if make_readable is True else func()
 
-            self.log_writer.info(f"Read {object} with make_readable as {make_readable}")
+            logging.info(f"Read {object} with make_readable as {make_readable}")
 
-            self.log_writer.info("Exited read_object method of BlobOperation class")
+            logging.info("Exited read_object method of BlobOperation class")
 
             return conv_func()
 
         except Exception as e:
             raise CustomException(e, sys) from e
 
-    def load_model(self, model_name, container, model_dir=None):
-        self.log_writer.info("Entered load_model method of BlobOperation class")
+    def load_model(
+        self, model_name: str, container_name: str, model_dir: str = None
+    ) -> pickle:
+        """
+        Method Name :   load_model
+        Description :   This method loads the model based on model_name from container_name container based on model_dir
+        
+        Output      :   ContainerClient object is returned 
+        On Failure  :   Raise a Custom Exception
+        
+        Version     :   1.2
+        Revisions   :   Moved to setup to cloud 
+        """
+        logging.info("Entered load_model method of BlobOperation class")
 
         try:
             func = (
-                lambda: model_name + self.save_format
+                lambda: model_name + SAVE_FORMAT
                 if model_dir is None
-                else model_dir + "/" + model_name + self.save_format
+                else model_dir + "/" + model_name + SAVE_FORMAT
             )
 
             model_file = func()
 
-            self.log_writer.info(f"Got {model_file} as model file")
+            logging.info(f"Got {model_file} as model file")
 
-            f_obj = self.get_object(model_file, container)
+            f_obj = self.get_object(model_file, container_name)
 
             model_content = self.read_object(f_obj, decode=False)
 
             model = loads(model_content)
 
-            self.log_writer.info(
-                f"Loaded {model_name} model from {container} container"
+            logging.info(
+                f"Loaded {model_name} model from {container_name} container_name"
             )
 
-            self.log_writer.info("Exited load_model method of BlobOperation class")
+            logging.info("Exited load_model method of BlobOperation class")
 
             return model
 
         except Exception as e:
             raise CustomException(e, sys) from e
 
-    def delete_file(self, fname, container):
-        self.log_writer.info("Entered delete_file method of BlobOperation class")
+    def delete_file(self, filename: str, container_name: str) -> None:
+        """
+        Method Name :   delete_file
+        Description :   This method deletes the filename file from container_name container
+        
+        Output      :   filename file is deleted from the container_name container
+        On Failure  :   Raise a Custom Exception
+        
+        Version     :   1.2
+        Revisions   :   Moved to setup to cloud 
+        """
+        logging.info("Entered delete_file method of BlobOperation class")
 
         try:
-            client = self.get_container_client(container)
+            client = self.get_container_client(container_name)
 
-            client.delete_blob(fname)
+            client.delete_blob(filename)
 
-            self.log_writer.info(f"Deleted {fname} file from {container} container")
+            logging.info(
+                f"Deleted {filename} file from {container_name} container_name"
+            )
 
-            self.log_writer.info("Exited delete_file method of BlobOperation class")
+            logging.info("Exited delete_file method of BlobOperation class")
 
         except Exception as e:
             raise CustomException(e, sys) from e
 
-    def load_file(self, fname, container):
-        self.log_writer.info("Entered load_file method of BlobOperation class")
+    def load_file(self, filename: str, container_name: str) -> bool:
+        """
+        Method Name :   load_file
+        Description :   This method loads the filename file from container_name container
+        
+        Output      :   Returns True if the filename file exists else False
+        On Failure  :   Raise a Custom Exception
+        
+        Version     :   1.2
+        Revisions   :   Moved to setup to cloud 
+        """
+        logging.info("Entered load_file method of BlobOperation class")
 
         try:
-            blob_client = self.get_blob_client(fname, container)
+            blob_client = self.get_blob_client(filename, container_name)
 
-            self.log_writer.info("Got blob client from blob service client")
+            logging.info("Got blob client from blob service client")
 
-            f = blob_client.exists()
+            _file = blob_client.exists()
 
-            self.log_writer.info(f"{fname} file exists is {f}")
+            logging.info(f"{filename} file exists is {_file}")
 
-            self.log_writer.info("Exited load_file method of BlobOperation class")
+            logging.info("Exited load_file method of BlobOperation class")
 
-            return f
+            return _file
 
         except Exception as e:
             raise CustomException(e, sys) from e
 
     def upload_file(
-        self, local_fname, container_fname, container, delete=True, replace=True
-    ):
-        self.log_writer.info("Entered upload_file method of BlobOperation class")
+        self,
+        local_filename: str,
+        container_filename: str,
+        container_name: str,
+        delete: bool = True,
+        replace: bool = True,
+    ) -> None:
+        """
+        Method Name :   upload_file
+        Description :   This method uploads the the local_filename file to container_name container with container_filename
+        
+        Output      :   local_filename file is uploaded to container_name container with container_filename
+        On Failure  :   Raise a Custom Exception
+        
+        Version     :   1.2
+        Revisions   :   Moved to setup to cloud 
+        """
+        logging.info("Entered upload_file method of BlobOperation class")
 
         try:
-            client = self.get_container_client(container)
+            client = self.get_container_client(container_name)
 
             if replace is True:
-                f = self.load_file(container_fname, container)
+                f = self.load_file(container_filename, container_name)
 
-                self.log_writer.info(
-                    f"{container_fname} file exists is {f}, and replace option is set to {replace}..Deleting the file"
+                logging.info(
+                    f"{container_filename} file exists is {f}, and replace option is set to {replace}..Deleting the file"
                 )
 
                 if f is True:
-                    self.delete_file(container_fname, container)
+                    self.delete_file(container_filename, container_name)
 
                 else:
-                    self.log_writer.info(f"{container_fname} file exists is {f}",)
+                    logging.info(f"{container_filename} file exists is {f}",)
 
-                with open(local_fname, "rb") as f:
-                    client.upload_blob(data=f, name=container_fname)
+                with open(local_filename, "rb") as f:
+                    client.upload_blob(data=f, name=container_filename)
 
-                self.log_writer.info(
-                    f"Uploaded {local_fname} to {container} container with name as {container_fname} file"
+                logging.info(
+                    f"Uploaded {local_filename} to {container_name} container_name with name as {container_filename} file"
                 )
 
             else:
-                self.log_writer.info(
-                    f"Replace option is set to {replace}, not replacing the {container_fname} file in {container} container",
+                logging.info(
+                    f"Replace option is set to {replace}, not replacing the {container_filename} file in {container_name} container_name",
                 )
 
             if delete is True:
-                remove(local_fname)
+                remove(local_filename)
 
-                self.log_writer.info(
-                    f"delete option is set to {delete}, deleted {local_fname} from local"
+                logging.info(
+                    f"delete option is set to {delete}, deleted {local_filename} from local"
                 )
 
             else:
-                self.log_writer.info(
-                    f"deleted option is set to {delete}, not removing the {local_fname} from local"
+                logging.info(
+                    f"deleted option is set to {delete}, not removing the {local_filename} from local"
                 )
 
-            self.log_writer.info("Exited upload_file method of BlobOperation class")
+            logging.info("Exited upload_file method of BlobOperation class")
 
         except Exception as e:
             raise CustomException(e, sys) from e
 
-    def upload_folder(self, folder, container, delete=True):
-        self.log_writer.info("Entered upload_folder method of BlobOperation class")
+    def upload_folder(
+        self, folder_name: str, container_name: str, delete: bool = True
+    ) -> None:
+        """
+        Method Name :   upload_folder
+        Description :   This method uploads folder_name folder to container_name container with kwargs
+        
+        Output      :   folder_name folder is uploaded to container_name container
+        On Failure  :   Raise a Custom Exception
+        
+        Version     :   1.2
+        Revisions   :   Moved to setup to cloud 
+        """
+        logging.info("Entered upload_folder method of BlobOperation class")
 
         try:
-            lst = listdir(folder)
+            lst = listdir(folder_name)
 
-            self.log_writer.info(f"Got list of files from the {folder} folder")
+            logging.info(f"Got list of files from the {folder_name} folder")
 
-            self.log_writer.info(f"Uploading files from {folder} folder to container")
+            logging.info(f"Uploading files from {folder_name} folder to container")
 
             for f in lst:
-                local_f = join(folder, f)
+                local_f = join(folder_name, f)
 
-                dest_f = folder + "/" + f
+                dest_f = folder_name + "/" + f
 
-                self.upload_file(local_f, dest_f, container)
+                self.upload_file(local_f, dest_f, container_name)
 
             if delete is True:
-                rmtree(folder)
+                rmtree(folder_name)
 
             else:
                 pass
 
-            self.log_writer.info(f"Uploaded {folder} folder to container")
+            logging.info(f"Uploaded {folder_name} folder_name to container_name")
 
-            self.log_writer.info("Exited upload_folder method of BlobOperation class")
+            logging.info("Exited upload_folder method of BlobOperation class")
 
         except Exception as e:
             raise CustomException(e, sys) from e
