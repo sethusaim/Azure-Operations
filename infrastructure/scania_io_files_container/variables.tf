@@ -10,7 +10,7 @@ variable "scania_resoure_group_location" {
 
 variable "scania_storage_account_name" {
   type    = string
-  default = "ScaniaSA"
+  default = "scaniasa"
 }
 
 variable "scania_account_tier" {
