@@ -37,7 +37,7 @@ jobs:
           terraform -chdir=infrastructure/ validate
 
       - name: Plan the terraform modules
-        id: terraform-apply
+        id: terraform-plan
         run: |
           terraform -chdir=infrastructure/ plan
 
