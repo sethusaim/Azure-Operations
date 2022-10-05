@@ -1,4 +1,4 @@
-name: Deploy Application Docker Image to Azure Virtual Machine
+name: Deploy Application Docker Image to Azure Web App Service
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
 
           docker push ${{ secrets.AZURE_LOGIN_SERVER }}/${{ secrets.REPO_NAME }}:${{ github.sha }}
 
-      - name: 'Login via Azure CLI'
+      - name: Login via Azure CLI
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
