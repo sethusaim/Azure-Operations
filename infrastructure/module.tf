@@ -29,9 +29,9 @@ module "io_files_container" {
   ]
 }
 
-module "acr" {
-  source = "./scania_acr"
-  depends_on = [
-    module.resource_group
-  ]
-}
+# module "acr" {
+#   source = "./scania_acr"
+#   depends_on = [
+#     module.resource_group
+#   ]
+# }
