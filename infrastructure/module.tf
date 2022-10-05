@@ -15,12 +15,12 @@ module "resource_group" {
   source = "./scania_resource_group"
 }
 
-module "virtual_machine" {
-  source = "./scania_vm"
-  depends_on = [
-    module.resource_group
-  ]
-}
+# module "virtual_machine" {
+#   source = "./scania_vm"
+#   depends_on = [
+#     module.resource_group
+#   ]
+# }
 
 module "io_files_container" {
   source = "./scania_io_files_container"
