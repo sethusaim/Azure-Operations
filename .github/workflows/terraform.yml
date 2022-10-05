@@ -39,7 +39,7 @@ jobs:
       - name: Plan the terraform modules
         id: terraform-apply
         run: |
-          terraform -chdir=infrastructure/ plan --auto-approve
+          terraform -chdir=infrastructure/ plan
 
       # - name: Apply the terraform modules
       #   id: terraform-apply
