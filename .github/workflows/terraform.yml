@@ -1,3 +1,5 @@
+name: Terraform Workflow
+
 on:
   push:
     branches:
