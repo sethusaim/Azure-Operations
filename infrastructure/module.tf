@@ -2,7 +2,7 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "mytfstate"
     storage_account_name = "mytfstate"
-    container_name       = "tfstate" 
+    container_name       = "tfstate"
     key                  = "prod.terraform.tfstate"
   }
 }
@@ -12,25 +12,25 @@ provider "azurerm" {
 }
 
 module "resource_group" {
-  source = "./my_resource_group"
+  source = "./resource_group"
 }
 
 module "virtual_machine" {
-  source = "./my_vm"
+  source = "./virtual_machine"
   depends_on = [
     module.resource_group
   ]
 }
 
 module "blob_container" {
-  source = "./my_io_files_container"
+  source = "./blob_container"
   depends_on = [
     module.resource_group
   ]
 }
 
-module "acr" {
-  source = "./my_acr"
+module "container_registry" {
+  source = "./container_registry"
   depends_on = [
     module.resource_group
   ]
