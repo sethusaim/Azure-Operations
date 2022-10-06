@@ -1,7 +1,7 @@
 terraform {
   backend "azurerm" {
     resource_group_name  = "mytfstate"
-    storage_account_name = "mytfstate"
+    storage_account_name = "scaniatfstate"
     container_name       = "tfstate"
     key                  = "prod.terraform.tfstate"
   }
@@ -31,6 +31,13 @@ module "blob_container" {
 
 module "container_registry" {
   source = "./container_registry"
+  depends_on = [
+    module.resource_group
+  ]
+}
+
+module "web_app" {
+  source = "./web_app"
   depends_on = [
     module.resource_group
   ]
