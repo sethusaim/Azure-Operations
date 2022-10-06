@@ -1,12 +1,11 @@
 import logging
-import pickle
 import sys
 from io import StringIO
 from os import listdir, remove
 from os.path import join
 from pickle import loads
 from shutil import rmtree
-from typing import Any
+from typing import Union
 
 from azure.storage.blob import BlobServiceClient, ContainerClient
 
@@ -110,9 +109,7 @@ class BlobOperation:
             raise CustomException(e, sys) from e
 
     @staticmethod
-    def read_object(
-        object: object, decode: bool = True, make_readable: bool = False
-    ) -> StringIO:
+    def read_object(object: object, decode: bool = True, make_readable: bool = False) -> Union[StringIO,str]:
         """
         Method Name :   read_object
         Description :   This method reads the blob object with kwargs
@@ -147,7 +144,7 @@ class BlobOperation:
 
     def load_model(
         self, model_name: str, container_name: str, model_dir: str = None
-    ) -> pickle:
+    ) -> object:
         """
         Method Name :   load_model
         Description :   This method loads the model based on model_name from container_name container based on model_dir
