@@ -11,11 +11,11 @@ resource "azurerm_container_registry" "my_acr" {
 }
 
 output "my_resoure_group_name" {
- value = module.resource_group.my_resoure_group_name 
+  value = module.resource_group.my_resoure_group_name
 }
 
 output "my_resoure_group_location" {
- value = module.resource_group.my_resoure_group_location 
+  value = module.resource_group.my_resoure_group_location
 }
 
 output "my_webapp_acr_login_server" {

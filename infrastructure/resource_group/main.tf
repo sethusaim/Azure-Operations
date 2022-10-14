@@ -4,7 +4,7 @@ resource "azurerm_resource_group" "my_resoure_group" {
 }
 
 output "my_resoure_group_name" {
- value = azurerm_resource_group.my_resoure_group.name 
+  value = azurerm_resource_group.my_resoure_group.name
 }
 
 output "my_resoure_group_location" {
