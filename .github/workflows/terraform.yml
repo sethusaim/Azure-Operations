@@ -1,15 +1,13 @@
-name: Terraform Workflow
+name: Apply changest to Infrastructure
 
 on:
   push:
     branches:
       - main
-    paths:
-      - infrastructure/*
 
 jobs:
   terraform:
-    name: Terraform
+    name: "Terraform"
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
@@ -17,10 +15,6 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
     runs-on: ubuntu-latest
     environment: production
-
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
 
     defaults:
       run:
@@ -30,6 +24,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Format the terraform modules
+        id: terraform-fmt
+        run: |
+          terraform -chdir=infrastructure/ fmt -recursive
+          
       - name: Initialize the terraform modules
         id: terraform-init
         run: |
