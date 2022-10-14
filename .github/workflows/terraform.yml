@@ -28,7 +28,7 @@ jobs:
         id: terraform-fmt
         run: |
           terraform -chdir=infrastructure/ fmt -recursive
-          
+
       - name: Initialize the terraform modules
         id: terraform-init
         run: |
