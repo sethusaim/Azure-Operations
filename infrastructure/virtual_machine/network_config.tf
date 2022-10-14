@@ -1,28 +1,28 @@
 resource "azurerm_virtual_network" "my_network" {
   name                = var.my_virtual_network_name
   address_space       = var.my_virtual_network_address_space
-  location            = var.my_location
-  resource_group_name = var.my_resouce_group_name
+  location            = module.resource_group.my_resoure_group_location
+  resource_group_name = module.resource_group.my_resoure_group_name
 }
 
 resource "azurerm_subnet" "my_subnet" {
   name                 = var.my_subnet_name
-  resource_group_name  = var.my_resouce_group_name
+  resource_group_name  = module.resource_group.my_resoure_group_name
   virtual_network_name = azurerm_virtual_network.my_network.name
   address_prefixes     = var.my_address_prefixes
 }
 
 resource "azurerm_public_ip" "my_public_ip" {
   name                = var.my_public_ip_name
-  location            = var.my_location
-  resource_group_name = var.my_resouce_group_name
+  location            = module.resource_group.my_resoure_group_location
+  resource_group_name = module.resource_group.my_resoure_group_name
   allocation_method   = var.my_public_ip_allocation_method
 }
 
 resource "azurerm_network_security_group" "my_nsg" {
   name                = var.my_network_sg_name
-  location            = var.my_location
-  resource_group_name = var.my_resouce_group_name
+  location            = module.resource_group.my_resoure_group_location
+  resource_group_name = module.resource_group.my_resoure_group_name
 
   security_rule {
     name                       = var.my_security_rule_name
@@ -39,8 +39,8 @@ resource "azurerm_network_security_group" "my_nsg" {
 
 resource "azurerm_network_interface" "my_nic" {
   name                = var.my_network_interface_name
-  location            = var.my_location
-  resource_group_name = var.my_resouce_group_name
+  location            = module.resource_group.my_resoure_group_location
+  resource_group_name = module.resource_group.my_resoure_group_name
 
   ip_configuration {
     name                          = var.my_nic_ip_config_name

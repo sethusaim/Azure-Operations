@@ -1,7 +1,11 @@
+module "resource_group" {
+  source = "../resource_group"
+}
+
 resource "azurerm_linux_virtual_machine" "my_vm" {
   name                  = var.my_vm_name
-  location              = var.my_location
-  resource_group_name   = var.my_resouce_group_name
+  location              = module.resource_group.my_resoure_group_location
+  resource_group_name   = module.resource_group.my_resoure_group_name
   network_interface_ids = [azurerm_network_interface.my_nic.id]
   size                  = var.my_vm_size
 
@@ -38,8 +42,8 @@ resource "azurerm_linux_virtual_machine" "my_vm" {
 
 resource "azurerm_storage_account" "my_storage_account" {
   name                     = var.my_boot_diag_sa_name
-  location                 = var.my_location
-  resource_group_name      = var.my_resouce_group_name
+  location                 = module.resource_group.my_resoure_group_location
+  resource_group_name      = module.resource_group.my_resoure_group_name
   account_tier             = var.my_sa_account_tier
   account_replication_type = var.my_account_replication_type
 }

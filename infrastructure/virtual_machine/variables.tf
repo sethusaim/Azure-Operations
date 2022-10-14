@@ -166,16 +166,6 @@ variable "my_virtual_network_address_space" {
   default = ["10.0.0.0/16"]
 }
 
-variable "my_location" {
-  type    = string
-  default = "eastus"
-}
-
-variable "my_resouce_group_name" {
-  type    = string
-  default = "myRG"
-}
-
 variable "my_account_replication_type" {
   type    = string
   default = "LRS"
